@@ -1,17 +1,11 @@
 package com.rt2zz.reactnativecontacts;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.content.pm.PackageManager;
-import android.content.ContentUris;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.Manifest;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
@@ -21,21 +15,9 @@ import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.RawContacts;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-
-import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableArray;
-import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.*;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -85,9 +67,12 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 ContentResolver cr = context.getContentResolver();
 
                 ContactsProvider contactsProvider = new ContactsProvider(cr);
-                WritableArray contacts = contactsProvider.getContacts();
-
-                callback.invoke(null, contacts);
+                try {
+                    WritableArray contacts = contactsProvider.getContacts();
+                    callback.invoke(null, contacts);
+                } catch (SecurityException ex) {
+                    callback.invoke(ex.getMessage(), null);
+                }
             }
         });
     }
@@ -114,9 +99,12 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 Context context = getReactApplicationContext();
                 ContentResolver cr = context.getContentResolver();
                 ContactsProvider contactsProvider = new ContactsProvider(cr);
-                WritableArray contacts = contactsProvider.getContactsMatchingString(searchString);
-
-                callback.invoke(null, contacts);
+                try {
+                    WritableArray contacts = contactsProvider.getContactsMatchingString(searchString);
+                    callback.invoke(null, contacts);
+                } catch (SecurityException ex) {
+                    callback.invoke(ex.getMessage(), null);
+                }
             }
         });
     }
@@ -135,9 +123,13 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 Context context = getReactApplicationContext();
                 ContentResolver cr = context.getContentResolver();
                 ContactsProvider contactsProvider = new ContactsProvider(cr);
-                String photoUri = contactsProvider.getPhotoUriFromContactId(contactId);
 
-                callback.invoke(null, photoUri);
+                try {
+                    String photoUri = contactsProvider.getPhotoUriFromContactId(contactId);
+                    callback.invoke(null, photoUri);
+                } catch (SecurityException e) {
+                    callback.invoke(e.getMessage(), null);
+                }
             }
         });
     }

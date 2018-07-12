@@ -7,24 +7,13 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static android.provider.ContactsContract.CommonDataKinds.Contactables;
-import static android.provider.ContactsContract.CommonDataKinds.Email;
-import static android.provider.ContactsContract.CommonDataKinds.Event;
-import static android.provider.ContactsContract.CommonDataKinds.Organization;
-import static android.provider.ContactsContract.CommonDataKinds.Phone;
-import static android.provider.ContactsContract.CommonDataKinds.StructuredName;
-import static android.provider.ContactsContract.CommonDataKinds.StructuredPostal;
+import static android.provider.ContactsContract.CommonDataKinds.*;
 
 public class ContactsProvider {
     public static final int ID_FOR_PROFILE_CONTACT = -1;
@@ -81,7 +70,7 @@ public class ContactsProvider {
         this.contentResolver = contentResolver;
     }
 
-    public WritableArray getContactsMatchingString(String searchString) {
+    public WritableArray getContactsMatchingString(String searchString) throws SecurityException {
         Map<String, Contact> matchingContacts;
         {
             Cursor cursor = contentResolver.query(
@@ -164,7 +153,7 @@ public class ContactsProvider {
        return null;
     }
 
-    public WritableArray getContacts() {
+    public WritableArray getContacts() throws SecurityException {
         Map<String, Contact> justMe;
         {
             Cursor cursor = contentResolver.query(
@@ -363,7 +352,7 @@ public class ContactsProvider {
         return map;
     }
 
-    public String getPhotoUriFromContactId(String contactId) {
+    public String getPhotoUriFromContactId(String contactId) throws SecurityException {
         Cursor cursor = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
                 PHOTO_PROJECTION.toArray(new String[PHOTO_PROJECTION.size()]),
